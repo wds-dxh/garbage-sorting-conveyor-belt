@@ -24,7 +24,7 @@ class Read_button_status
     private:
         int button_pin;
     public:
-        Read_button_status(int button_pin);
+        Read_button_status(int button_pin = A3);
         ~Read_button_status();
         bool read_button_status();
 };

@@ -2,8 +2,8 @@
  * @Author: wds-dxh wdsnpshy@163.com
  * @Date: 2024-03-13 21:04:27
  * @LastEditors: wds-dxh wdsnpshy@163.com
- * @LastEditTime: 2024-03-13 21:54:31
- * @FilePath: \Garbage storage compression\src\Stepper_Motor_Control.cpp
+ * @LastEditTime: 2024-03-16 13:12:05
+ * @FilePath: \Garbage storage compression\src\Stepper_motor_control.cpp
  * @Description: 
  * 微信: 15310638214 
  * 邮箱：wdsnpshy@163.com 
@@ -28,12 +28,18 @@
  * @param {int} MS3         电机细分
  * @return {*}
  */
-Stepper_motor_control :: Stepper_motor_control(int MOTOR_STEPS = 200,int RPM = 50, int DIR = A2, int STEP = A1, int SLEEP = A0, int MS1 , int MS2, int MS3)
-    :   stepper(MOTOR_STEPS, DIR, STEP, SLEEP, MS1, MS2, MS3){
+Stepper_motor_control :: Stepper_motor_control(uint8_t MOTOR_STEPS,uint8_t RPM, int DIR, int STEP, int SLEEP, uint8_t MS1, uint8_t MS2, uint8_t MS3)
+    :stepper(MOTOR_STEPS, DIR, STEP, SLEEP, MS1, MS2, MS3){
     //初始化步进电机
-    stepper.begin(RPM);
-    stepper.setEnableActiveState(LOW);      //低电平使能
-    stepper.enable();
+    this->MOTOR_STEPS = MOTOR_STEPS;
+    this->RPM = RPM;
+    this->DIR = DIR;
+    this->STEP = STEP;
+    this->SLEEP = SLEEP;
+    this->MS1 = MS1;
+    this->MS2 = MS2;
+    this->MS3 = MS3;
+
 }
 
 
@@ -47,10 +53,16 @@ Stepper_motor_control :: Stepper_motor_control(int MOTOR_STEPS = 200,int RPM = 5
  * @return {*}
  */
 void Stepper_motor_control :: set_motor(int RPM, int microstep, int enable){
-    stepper.setRPM(RPM);    //设置电机转速
-    stepper.setMicrostep(microstep);    //设置电机细分
-    stepper.setEnableActiveState(enable);   //设置电机使能
-    stepper.enable();                           
+
+    stepper.begin(RPM);
+    stepper.setMicrostep(microstep);
+    stepper.setEnableActiveState(LOW);
+    if (enable == true){
+        stepper.enable();
+    }
+    else{
+        stepper.disable();
+    }                 
 }
 
 /**
@@ -62,6 +74,7 @@ void Stepper_motor_control :: set_motor(int RPM, int microstep, int enable){
  * @return {*}
  */
 void Stepper_motor_control :: control_motor(int circle, int direction){
+
     //电机旋转circle圈，方向为direction
     stepper.rotate(circle * 360 * direction);
     
